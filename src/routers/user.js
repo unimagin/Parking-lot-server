@@ -1,5 +1,4 @@
 const express = require('express')
-const { use } = require('../app')
 const User = require('../models/user')
 const router = new express.Router()
 
@@ -19,7 +18,7 @@ router.post('/user/login', async (request, response) => {
         if (user == null) {
             throw new Error('User not found')
         }
-        else if (user.passwd != request.body.passwd) {
+        else if (user.password != request.body.password) {
             throw new Error('Password mismatch')
         }
         response.send('Successfully logged in.')
