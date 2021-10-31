@@ -1,7 +1,31 @@
-const { Sequelize, DataTypes } = require('sequelize')
+const { Model, Sequelize, DataTypes } = require('sequelize')
+const jwt = require('jsonwebtoken')
+const bcrypt = require('bcryptjs')
 const sequelize = require('../db/mysql')
 
-const User = sequelize.define('User', {
+class User extends Model {
+    async generateAuthToken() {
+        const user = this
+        const token = jwt.sign({user_ID: user.user_ID}, process.env.JWT_SECRET)
+        user.token = token
+        await user.save()
+        return token
+    }
+
+    static async findByCredentials(phone, password) {
+        const user = await User.findOne({ phone })
+        if (!user) {
+            throw new Error('User does not exist')
+        }
+        const isMatch = await bcrypt.compare(password, user.password)
+        if (!isMatch) {
+            throw new Error('Username and password mismatch!')
+        }
+        return user
+    }
+}
+
+User.init({
     user_ID: {
         type: DataTypes.UUID,
         defaultValue: Sequelize.UUIDV4,
@@ -30,7 +54,8 @@ const User = sequelize.define('User', {
         allowNull: true
     }
 }, {
-    tableName: 'users'
+    sequelize,
+    modelName: 'users'
 })
 
 module.exports = User
