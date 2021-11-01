@@ -38,8 +38,7 @@ User.init({
     },
     email: {
         type: DataTypes.STRING,
-        allowNull: true,
-        unique: true
+        allowNull: true
     },
     bank_number: {
         type: DataTypes.STRING,
