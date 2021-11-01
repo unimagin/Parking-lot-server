@@ -13,7 +13,7 @@ class User extends Model {
     }
 
     static async findByCredentials(phone, password) {
-        const user = await User.findOne({ phone })
+        const user = await User.findOne({where: { phone: phone }})
         if (!user) {
             throw new Error('User does not exist')
         }
