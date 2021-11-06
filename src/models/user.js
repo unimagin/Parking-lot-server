@@ -23,6 +23,19 @@ class User extends Model {
         }
         return user
     }
+
+    static async updateByPhone (user_data) {
+        const user = await User.findOne({ where: { phone } })
+        if (user == null) {
+            throw new Error("Edition failed!")
+        }
+        user.update({
+            email: user_data.email,
+            bank_number: user_data.bank_number
+        })
+        user.save()
+        return { email: user.email, bank_number: user.bank_number }
+    }
 }
 
 User.init({

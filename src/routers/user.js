@@ -29,4 +29,18 @@ router.post('/user/login', async (request, response) => {
     }
 })
 
+router.post('/user/edit', async (request, response) => {
+    const body = request.body
+    try {
+        const user = await User.updateByPhone(body)
+        if (user == null) {
+            throw new Error("Edition failed!")
+        }
+        response.send(user)
+    } catch (error) {
+        response.status(400).send(error)
+    }
+})
+
+
 module.exports = router
