@@ -9,21 +9,21 @@ router.post('/user/register', async (request, response) => {
         body.password = await bcrypt.hash(body.password, 8)
         const user = await User.create(body)
         const token = user.generateAuthToken()
-        response.status(200).send({user, token})
-    } catch(error) {
+        response.status(200).send({ user, token })
+    } catch (error) {
         response.status(400).send(error)
     }
 })
 
 router.post('/user/login', async (request, response) => {
     try {
-        const {phone, password} = request.body
+        const { phone, password } = request.body
         const user = await User.findByCredentials(phone, password)
         if (user == null) {
             throw new Error('User not found')
         }
         const token = await user.generateAuthToken()
-        response.send({user, token})
+        response.send({ user, token })
     } catch (error) {
         response.status(400).send(error)
     }
@@ -36,7 +36,7 @@ router.post('/user/edit', async (request, response) => {
         if (user == null) {
             throw new Error("Edition failed!")
         }
-        response.send(user)
+        response.send({ email: user.email, bank_number: user.bank_number })
     } catch (error) {
         response.status(400).send(error)
     }

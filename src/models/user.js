@@ -4,16 +4,16 @@ const bcrypt = require('bcryptjs')
 const sequelize = require('../db/mysql')
 
 class User extends Model {
-    async generateAuthToken() {
+    async generateAuthToken () {
         const user = this
-        const token = jwt.sign({user_ID: user.user_ID}, process.env.JWT_SECRET)
+        const token = jwt.sign({ user_ID: user.user_ID }, process.env.JWT_SECRET)
         user.token = token
         await user.save()
         return token
     }
 
-    static async findByCredentials(phone, password) {
-        const user = await User.findOne({where: { phone: phone }})
+    static async findByCredentials (phone, password) {
+        const user = await User.findOne({ where: { phone: phone } })
         if (!user) {
             throw new Error('User does not exist')
         }
@@ -34,7 +34,7 @@ class User extends Model {
             bank_number: user_data.bank_number
         })
         user.save()
-        return { email: user.email, bank_number: user.bank_number }
+        return user
     }
 }
 
