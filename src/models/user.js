@@ -25,7 +25,7 @@ class User extends Model {
     }
 
     static async updateByPhone (user_data) {
-        const user = await User.findOne({ where: { phone } })
+        const user = await User.findOne({ where: { phone:user_data.phone } })
         if (user == null) {
             throw new Error("Edition failed!")
         }
