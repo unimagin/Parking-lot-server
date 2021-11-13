@@ -1,0 +1,13 @@
+name: deploy blog to tengxunyun
+on:
+  push:
+    branches:
+      - main
+jobs:
+  wget:
+    runs-on: ubuntu-latest
+    steps:
+    - name: wget
+      uses: wei/wget@v1
+      with:
+        args: -qO- http://82.156.168.246:8080/autoDeploy
