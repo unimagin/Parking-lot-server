@@ -33,7 +33,7 @@ const Reservation = sequelize.define('Reservation', {
         type: DataTypes.DOUBLE,
         allowNull: true
     },
-    resevation_time: {
+    reservation_time: {
         type: DataTypes.DATE
     }
 }, {

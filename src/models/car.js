@@ -13,7 +13,7 @@ const Car = sequelize.define('Car', {
         allowNull: true,
         defaultValue: null
     },
-    owner_ID: {
+   /* owner_ID: {
         type: DataTypes.UUID,
         allowNull: true,
         defaultValue: null,
@@ -22,7 +22,7 @@ const Car = sequelize.define('Car', {
             key: user_ID,
             deferrable: Deferrable.INITIALLY_IMMEDIATE
         }
-    }
+    }*/
 }, {
     modelName: 'cars'
 })
