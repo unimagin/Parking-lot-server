@@ -4,10 +4,24 @@ on:
     branches:
       - main
 jobs:
-  wget:
+  build:
     runs-on: ubuntu-latest
     steps:
-    - name: wget
-      uses: wei/wget@v1
-      with:
-        args: -qO- http://82.156.168.246:8080/autoDeploy
+      # 切换分支
+      - name: Checkout
+        uses: actions/checkout@main
+      # 下载 git submodule
+      - uses: srt32/git-actions@v0.0.3
+        with:
+          args: git submodule update --init --recursive
+      # 使用 node:10
+      
+      # Deploy
+      - name: auto deploy 
+        uses: nerd4ever/ssh-action@master
+        with:
+          command: 
+            /home/nkcs/autoDeploy.sh
+          host: ${{ secrets.HOST }}
+          user: nkcs
+          key: ${{ secrets.PRIVATE_KEY}}
