@@ -10,3 +10,4 @@ router.get('/autoDeploy', async (request, response) => {
         response.status(400).send(error)
     }
 })
+module.exports = router
