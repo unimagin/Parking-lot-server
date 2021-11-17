@@ -7,7 +7,7 @@ const Bill = sequelize.define('Bill', {
     bill_ID: {
         type: DataTypes.UUID,
         primaryKey: true,
-        defaultValue: Sequelize.UUIDV4
+        defaultValue: sequelize.UUIDV4
     },
     car_number: {
         type: DataTypes.STRING,
@@ -15,7 +15,7 @@ const Bill = sequelize.define('Bill', {
         defaultValue: null,
         references: {
             model: Car,
-            key: car_number,
+            key: Car.car_number,
             deferrable: Deferrable.INITIALLY_IMMEDIATE
         }
     },
@@ -25,7 +25,7 @@ const Bill = sequelize.define('Bill', {
         defaultValue: null,
         references: {
             model: User,
-            key: user_ID,
+            key: User.user_ID,
             deferrable: Deferrable.INITIALLY_IMMEDIATE
         }
     },
@@ -34,6 +34,9 @@ const Bill = sequelize.define('Bill', {
         allowNull: true
     },
     status: {
+        type: DataTypes.INTEGER
+    },
+    isPaid: {
         type: DataTypes.INTEGER
     },
     arrive_time: {

@@ -29,11 +29,10 @@ const Reservation = sequelize.define('Reservation', {
             deferrable: Deferrable.INITIALLY_IMMEDIATE
         }
     },
-    money: {
-        type: DataTypes.DOUBLE,
-        allowNull: true
-    },
     reservation_time: {
+        type: DataTypes.DATE
+    },
+    used: {
         type: DataTypes.DATE
     }
 }, {

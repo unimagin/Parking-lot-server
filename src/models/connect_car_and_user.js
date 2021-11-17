@@ -1,12 +1,12 @@
-const {DataTypes, Deferrable} = require('sequelize')
+const { DataTypes, Deferrable } = require('sequelize')
 const sequelize = require('../db/mysql')
 const User = require('./user')
 const Car = require('/car')
 
 const Connection = sequelize.define('Connect', {
-    Connection_ID:{
-      type:DataTypes.UUID,
-      primaryKey: true
+    Connection_ID: {
+        type: DataTypes.UUID,
+        primaryKey: true
     },
     car_ID: {
         type: DataTypes.UUID,
@@ -29,8 +29,8 @@ const Connection = sequelize.define('Connect', {
         }
     },
     //主人对车的备注
-    remark:{
-        type:DataTypes.STRING,
+    remark: {
+        type: DataTypes.STRING,
         allowNull: true,
         defaultValue: null,
     }

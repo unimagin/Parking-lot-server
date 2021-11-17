@@ -1,6 +1,9 @@
 const express = require('express')
 const bcrypt = require('bcryptjs')
 const User = require('../models/user')
+const bill = require('../models/bill')
+const { request, response } = require('express')
+const Bill = require('../models/bill')
 const router = new express.Router()
 
 router.post('/user/register', async (request, response) => {
@@ -38,6 +41,22 @@ router.post('/user/edit', async (request, response) => {
         }
         response.send({ email: user.email, bank_number: user.bank_number })
     } catch (error) {
+        response.status(400).send(error)
+    }
+})
+
+router.post('/user/finishedreservation', async (request, response) => {
+    try {
+        const user_ID = request.body.user_ID
+        const bills = await Bill.findAll({ where: { user_ID: user_ID } })
+        if (bills == null) {
+            response.send('xxx')
+        }
+        else {
+            response.send({ bills })
+        }
+    }
+    catch (error) {
         response.status(400).send(error)
     }
 })
