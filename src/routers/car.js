@@ -6,9 +6,9 @@ const router = new express.Router()
 router.post('/user/add_car', async (request, response) => {
     const body = request.body
     try {
-        const car = await Car.findOne({ where: {car_number: body.car_number}})
+        let car = await Car.findOne({ where: {car_number: body.car_number}})
         if (car == null) {
-            await Car.create({car_number: body.car_number, remark: body.remark})
+            car = await Car.create({car_number: body.car_number, remark: body.remark})
         }
         await UserCar.create({user_ID: body.user_ID, car_number: body.car_number})
         response.status(200).send(car)
