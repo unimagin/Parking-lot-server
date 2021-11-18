@@ -34,7 +34,7 @@ const Park = sequelize.define('Park', {
         allowNull: true
     }
 }, {
-    modelName: 'parks'
+    modelName: 'park'
 })
 
 module.exports = Park

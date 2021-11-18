@@ -1,43 +1,34 @@
 const express = require('express')
-
 const Car = require('../models/car')
-const Connection = require("../models/connect_car_and_user")
-const { where } = require("sequelize");
+const UserCar = require('../models/usercar')
 const router = new express.Router()
 
-router.post('/user/addcar', async (request, response) => {
-    console.log("hhhhh");
+router.post('/user/add_car', async (request, response) => {
     const body = request.body
-    var car = await Car.findOne({ where: { car_number: body.car_number } })
-    if (car == null) {
-        car = await Car.create(body.car_number);
-    }
-    const connection = await Connection.findOne({ where: { car_ID: car.car_ID, user_ID: body.user.user_ID } });
-    if (connection != null) {
-        throw new Error("already exist")
-    } else {
-        const newConnection = {
-            car_ID: car.car_ID,
-            user_ID: body.user.user_ID,
-            remark: body.remark,
-        }
-        const newConnect = await Connection.create(newConnection);
-        if (newConnect) {
-            var carArray = await Connection.findAll({
-                attributes: ['car_ID', 'remark'],
-                where: { user_ID: body.user.user_ID }
-            })
-            console.log(carArray);
-            for (let i = 0; i < carArray.length; i++) {
-                carArray[i].car_number = await Car.findOne(
-                    {
-                        attributes: ['car_number'],
-                        where: { car_ID: carArray[i].car_ID }
-                    });
-            }
-            // var cars=await Connection.findOne
-            response.status(200).send({ state: true })
-        }
+    try {
+        const car = await Car.create({car_number: body.car_number, remark: body.remark})
+        const usercar = await UserCar.create({user_ID: body.user_ID, car_number: body.car_number})
+        response.status(200).send(car)
+    } catch(error) {
+        response.status(400).send(error)
     }
 });
+
+router.post('/user/update_car', async (request, response) => {
+    const body = request.body
+    try {
+        const car = await Car.findOne({where: {car_number: body.car_number}})
+        if (car == null) {
+            throw new Error()
+        }
+        if (body.remark != undefined) {
+            car.remark = body.remark
+            await car.save()
+        }
+        response.status(200).send(car)
+    } catch(error) {
+        response.status(400).send(error)
+    }
+});
+
 module.exports = router

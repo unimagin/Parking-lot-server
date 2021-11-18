@@ -6,7 +6,9 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "env-cmd -f ./config/localhost.env node src/index.js",
-    "cloud-dev": "env-cmd -f ./config/cloud.env node src/index.js"
+    "cloud-dev": "env-cmd -f ./config/cloud.env node src/index.js",
+    "local-sync": "env-cmd -f ./config/localhost.env node src/sync.js",
+    "cloud-sync": "env-cmd -f ./config/cloud.env node src/sync.js"
   },
   "keywords": [],
   "author": "",

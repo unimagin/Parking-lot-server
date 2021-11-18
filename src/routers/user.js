@@ -1,8 +1,6 @@
 const express = require('express')
 const bcrypt = require('bcryptjs')
 const User = require('../models/user')
-const bill = require('../models/bill')
-const { request, response } = require('express')
 const Bill = require('../models/bill')
 const router = new express.Router()
 

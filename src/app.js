@@ -2,7 +2,7 @@ const express = require('express')
 const cors = require('cors')
 const userRouter = require('./routers/user')
 const parkRouter = require('./routers/park')
-const autoDeployRouter =require('./routers/autoDeploy')
+const carRouter = require('./routers/car')
 
 const app = express()
 
@@ -17,6 +17,6 @@ app.all('*', function (req, res, next) {
 app.use(express.json())
 app.use(userRouter)
 app.use(parkRouter)
-app.use(autoDeployRouter)
+app.use(carRouter)
 
 module.exports = app

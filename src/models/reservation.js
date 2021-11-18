@@ -1,4 +1,4 @@
-const { DataTypes, Deferrable } = require('sequelize')
+const { Sequelize, DataTypes, Deferrable } = require('sequelize')
 const sequelize = require('../db/mysql')
 const User = require('./user')
 const Car = require('./car')
@@ -36,7 +36,7 @@ const Reservation = sequelize.define('Reservation', {
         type: DataTypes.DATE
     }
 }, {
-    modelName: 'reservations'
+    modelName: 'reservation'
 })
 
 module.exports = Reservation

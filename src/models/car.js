@@ -1,30 +1,17 @@
-const { DataTypes, Deferrable } = require('sequelize')
+const { Sequelize, DataTypes } = require('sequelize')
 const sequelize = require('../db/mysql')
-const User = require('./user')
 
 const Car = sequelize.define('Car', {
-    car_ID: {
-        type: DataTypes.UUID,
-        primaryKey: true,
-        defaultValue: sequelize.UUIDV4
-    },
     car_number: {
         type: DataTypes.STRING,
-        allowNull: true,
-        defaultValue: null
+        primaryKey: true
+    },
+    remark: {
+        type: DataTypes.STRING,
+        allowNull: true
     }
-    // owner_ID: {
-    //     type: DataTypes.UUID,
-    //     allowNull: true,
-    //     defaultValue: null,
-    //     references: {
-    //         model: User,
-    //         key: user_ID,
-    //         deferrable: Deferrable.INITIALLY_IMMEDIATE
-    //     }
-    // }
 }, {
-    modelName: 'cars'
+    modelName: 'car'
 })
 
 module.exports = Car
