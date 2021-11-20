@@ -1,8 +1,7 @@
-const { Sequelize, DataTypes, Deferrable } = require('sequelize')
+const { Sequelize, DataTypes } = require('sequelize')
 const sequelize = require('../db/mysql')
 const User = require('./user')
 const Car = require('./car')
-const Park = require('./park')
 
 const Reservation = sequelize.define('Reservation', {
     reservation_ID: {
