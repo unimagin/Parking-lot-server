@@ -15,7 +15,7 @@ const Reservation = sequelize.define('Reservation', {
         defaultValue: null,
         references: {
             model: Car,
-            key: car_number,
+            key: 'car_number',
             deferrable: Deferrable.INITIALLY_IMMEDIATE
         }
     },
@@ -25,18 +25,21 @@ const Reservation = sequelize.define('Reservation', {
         defaultValue: null,
         references: {
             model: User,
-            key: user_ID,
+            key: 'user_ID',
             deferrable: Deferrable.INITIALLY_IMMEDIATE
         }
     },
-    reservation_time: {
+    begin_time: {
+        type: DataTypes.DATE
+    },
+    end_time: {
         type: DataTypes.DATE
     },
     used: {
-        type: DataTypes.DATE
+        type: DataTypes.INTEGER,
+        defaultValue: 0
     }
 }, {
-    modelName: 'reservation'
 })
 
 module.exports = Reservation

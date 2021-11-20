@@ -39,6 +39,9 @@ const Bill = sequelize.define('Bill', {
     isPaid: {
         type: DataTypes.INTEGER
     },
+    begin_time: {
+        type: DataTypes.DATE
+    },
     arrive_time: {
         type: DataTypes.DATE
     },

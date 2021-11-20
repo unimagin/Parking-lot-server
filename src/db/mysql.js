@@ -4,5 +4,4 @@ const sequelize = new Sequelize('parking_lot', 'root', 'root', {
     port: '3306',
     dialect: 'mysql'
 })
-    
 module.exports = sequelize

@@ -3,6 +3,7 @@ const cors = require('cors')
 const userRouter = require('./routers/user')
 const parkRouter = require('./routers/park')
 const carRouter = require('./routers/car')
+const reservationRouter = require('./routers/reservation')
 
 const app = express()
 
@@ -18,5 +19,6 @@ app.use(express.json())
 app.use(userRouter)
 app.use(parkRouter)
 app.use(carRouter)
+app.use(reservationRouter)
 
 module.exports = app

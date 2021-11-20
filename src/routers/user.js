@@ -43,7 +43,7 @@ router.post('/user/edit', async (request, response) => {
     }
 })
 
-router.post('/user/finishedreservation', async (request, response) => {
+router.post('/user/finished_reservation', async (request, response) => {
     try {
         const user_ID = request.body.user_ID
         const bills = await Bill.findAll({ where: { user_ID: user_ID } })
