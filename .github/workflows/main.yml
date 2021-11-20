@@ -17,5 +17,5 @@ jobs:
         with:
           hosts: 'nkcs@82.156.168.246'
           privateKey: ${{ secrets.PRIVATE_KEY }}
-          command: /home/nkcs/autoDeploy.sh
+          command: bash /home/nkcs/autoDeploy.sh 1>stdout.txt 2>stderr.txt
 
