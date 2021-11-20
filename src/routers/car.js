@@ -17,7 +17,7 @@ router.post('/user/add_car', authentication, async (request, response) => {
     } catch(error) {
         response.status(400).send(error)
     }
-});
+})
 
 router.post('/user/update_car', authentication, async (request, response) => {
     const { car_number, remark } = request.body
@@ -35,6 +35,19 @@ router.post('/user/update_car', authentication, async (request, response) => {
     } catch(error) {
         response.status(400).send(error)
     }
-});
+})
+
+router.post('/user/look_cars', authentication, async (request, response) => {
+    const user = request.user
+    try {
+        let cars = await UserCar.findAll({ where: {user_ID: user.user_ID}})
+        cars = cars.map(({car_number, remark}) => {
+            return {car_number, remark}
+        })
+        response.send(cars)
+    } catch(error) {
+        response.status(400).send(error)
+    }
+})
 
 module.exports = router
