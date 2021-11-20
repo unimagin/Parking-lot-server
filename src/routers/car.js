@@ -1,16 +1,18 @@
 const express = require('express')
 const Car = require('../models/car')
 const UserCar = require('../models/usercar')
+const authentication = require('../middleware/auth')
 const router = new express.Router()
 
-router.post('/user/add_car', async (request, response) => {
-    const body = request.body
+router.post('/user/add_car', authentication, async (request, response) => {
+    const { car_number, remark } = request.body
+    const user = request.user
     try {
-        let car = await Car.findOne({ where: {car_number: body.car_number}})
+        let car = await Car.findByPk(car_number)
         if (car == null) {
-            car = await Car.create({car_number: body.car_number, remark: body.remark})
+            car = await Car.create({car_number, remark})
         }
-        await UserCar.create({user_ID: body.user_ID, car_number: body.car_number})
+        await UserCar.create({user_ID: user.user_ID, car_number})
         response.status(200).send(car)
     } catch(error) {
         response.status(400).send(error)
@@ -18,14 +20,14 @@ router.post('/user/add_car', async (request, response) => {
 });
 
 router.post('/user/update_car', async (request, response) => {
-    const body = request.body
+    const { car_number, remark } = request.body
     try {
-        const car = await Car.findOne({where: {car_number: body.car_number}})
+        const car = await Car.findByPk(car_number)
         if (car == null) {
-            throw new Error()
+            throw new Error('Car does not exists')
         }
-        if (body.remark != undefined) {
-            car.remark = body.remark
+        if (remark != undefined) {
+            car.remark = remark
             await car.save()
         }
         response.status(200).send(car)
