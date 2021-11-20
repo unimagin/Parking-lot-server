@@ -9,7 +9,7 @@ router.post('/user/register', async (request, response) => {
     try {
         body.password = await bcrypt.hash(body.password, 8)
         const user = await User.create(body)
-        const token = user.generateAuthToken()
+        const token = await user.generateAuthToken()
         response.status(200).send({ user, token })
     } catch (error) {
         response.status(400).send(error)

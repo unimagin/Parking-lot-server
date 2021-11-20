@@ -66,8 +66,7 @@ User.init({
         allowNull: true
     }
 }, {
-    sequelize,
-    modelName: 'users'
+    sequelize
 })
 
 module.exports = User
