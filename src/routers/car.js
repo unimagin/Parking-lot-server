@@ -38,9 +38,24 @@ router.post('/user/update_car', authentication, async (request, response) => {
 })
 
 router.post('/user/look_cars', authentication, async (request, response) => {
-    const user = request.user
+    const {user_ID} = request.user
     try {
-        let cars = await UserCar.findAll({ where: {user_ID: user.user_ID}})
+        let cars = await UserCar.findAll({ where: {user_ID}})
+        cars = cars.map(({car_number, remark}) => {
+            return {car_number, remark}
+        })
+        response.send(cars)
+    } catch(error) {
+        response.status(400).send(error)
+    }
+})
+
+router.post('/user/del_cars', authentication, async (request, response) => {
+    const {car_number} = request.body
+    const {user_ID} = request.user
+    try {
+        await UserCar.destroy({where: {user_ID, car_number}})
+        let cars = await UserCar.findAll({ where: {user_ID}})
         cars = cars.map(({car_number, remark}) => {
             return {car_number, remark}
         })
