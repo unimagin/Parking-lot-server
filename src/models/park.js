@@ -4,37 +4,32 @@ const User = require('./user')
 const Car = require('./car')
 
 const Park = sequelize.define('Park', {
-    park_ID: {
-        type: DataTypes.UUID,
+    park_number: {
+        type: DataTypes.INTEGER,
         primaryKey: true,
-        defaultValue: Sequelize.UUIDV4
-    },
-    car_number: {
-        type: DataTypes.STRING,
-        allowNull: true,
-        defaultValue: null,
-        references: {
-            model: Car,
-            key: car_number,
-            deferrable: Deferrable.INITIALLY_IMMEDIATE
-        }
-    },
-    user_ID: {
-        type: DataTypes.UUID,
-        allowNull: true,
-        defaultValue: null,
-        references: {
-            model: User,
-            key: user_ID,
-            deferrable: Deferrable.INITIALLY_IMMEDIATE
-        }
+        autoIncrement: true
     },
     status: {
         type: DataTypes.INTEGER,
-        allowNull: true
+        allowNull: false
     }
 }, {
-    modelName: 'park'
+})
+
+Park.belongsTo(User, {
+    foreignKey: {
+        name: 'user_ID',
+        allowNull: false
+    },
+    onDelete: 'RESTRICT'
+})
+
+Park.belongsTo(Car, {
+    foreignKey: {
+        name: 'car_number',
+        allowNull: false
+    },
+    onDelete: 'RESTRICT'
 })
 
 module.exports = Park
