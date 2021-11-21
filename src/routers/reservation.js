@@ -16,7 +16,26 @@ router.post('/reservation/change_used', async (request, response) => {
       arrive_time: arrive_time
     })
     reservation.save()
-    response.status(200).send('using')
+    response.send('using')
+  }
+  catch (error) {
+    response.status(400).send(error)
+  }
+})
+
+router.post('/reservation/save_reservation', async (request, response) => {
+  const { reservation_ID, begin_time, end_time } = request.body
+  try {
+    //判断是否有空闲
+    const reservation = await Reservation.findOne({ where: { reservation_ID: reservation_ID } })
+    if (reservation == null) {
+      throw new Error("Reservation not exist!")
+    }
+    reservation.update({
+      begin_time: new Date(begin_time),
+      end_time: new Date(end_time)
+    })
+    response.send('success change time')
   }
   catch (error) {
     response.status(400).send(error)
