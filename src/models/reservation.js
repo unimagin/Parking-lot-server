@@ -1,4 +1,4 @@
-const { Sequelize, DataTypes, Deferrable } = require('sequelize')
+const { Sequelize, DataTypes } = require('sequelize')
 const sequelize = require('../db/mysql')
 const User = require('./user')
 const Car = require('./car')
@@ -9,40 +9,43 @@ const Reservation = sequelize.define('Reservation', {
         primaryKey: true,
         defaultValue: Sequelize.UUIDV4
     },
-    car_number: {
-        type: DataTypes.STRING,
-        allowNull: true,
-        defaultValue: null,
-        references: {
-            model: Car,
-            key: 'car_number',
-            deferrable: Deferrable.INITIALLY_IMMEDIATE
-        }
-    },
-    user_ID: {
-        type: DataTypes.UUID,
-        allowNull: true,
-        defaultValue: null,
-        references: {
-            model: User,
-            key: 'user_ID',
-            deferrable: Deferrable.INITIALLY_IMMEDIATE
-        }
-    },
     begin_time: {
-        type: DataTypes.DATE
+        type: DataTypes.DATE,
+        allowNull: false
     },
     end_time: {
-        type: DataTypes.DATE
+        type: DataTypes.DATE,
+        allowNull: false
+    },
+    parking_number: {
+        type: DataTypes.INTEGER,
+        allowNull: false
     },
     arrive_time: {
         type: DataTypes.DATE
     },
     used: {
         type: DataTypes.INTEGER,
+        allowNull: false,
         defaultValue: 0
     }
 }, {
+})
+
+Reservation.belongsTo(User, {
+    foreignKey: {
+        name: 'user_ID',
+        allowNull: false
+    },
+    onDelete: 'RESTRICT'
+})
+
+Reservation.belongsTo(Car, {
+    foreignKey: {
+        name: 'car_number',
+        allowNull: false
+    },
+    onDelete: 'RESTRICT'
 })
 
 module.exports = Reservation
