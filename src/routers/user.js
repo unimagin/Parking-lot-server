@@ -2,6 +2,8 @@ const express = require('express')
 const bcrypt = require('bcryptjs')
 const User = require('../models/user')
 const Bill = require('../models/bill')
+const Reservation = require('../models/reservation')
+const { request, response, resource } = require('../app')
 const router = new express.Router()
 
 router.post('/user/register', async (request, response) => {
@@ -48,11 +50,51 @@ router.post('/user/finished_reservation', async (request, response) => {
         const user_ID = request.body.user_ID
         const bills = await Bill.findAll({ where: { user_ID: user_ID } })
         if (bills == null) {
-            response.send('xxx')
+            response.send([])
         }
         else {
             response.send({ bills })
         }
+    }
+    catch (error) {
+        response.status(400).send(error)
+    }
+})
+
+router.post('/user/look_reservation', async (request, response) => {
+    const user_ID = request.body.user_ID
+    try {
+        const reservations = await Reservation.findAll({ where: { user_ID: user_ID } })
+        if (reservations == null) {
+            response.send([])
+        }
+        else {
+            response.send({ reservations })
+        }
+    }
+    catch (error) {
+        response.status(400).send(error)
+    }
+})
+
+router.post('/user/cancel_reservation', async (request, response) => {
+    const reservation = request.body
+    try {
+        await Reservation.destroy({
+            where: { reservation_ID: reservation.reservation_ID }
+        })
+        await Bill.create(
+            {
+                car_number: reservation.car_number,
+                user_ID: reservation.user_ID,
+                arrive_time: null,
+                leave_time: null,
+                money: null,
+                status: 2,
+                isPaid: null
+            }
+        )
+        response.send('success')
     }
     catch (error) {
         response.status(400).send(error)

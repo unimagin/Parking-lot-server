@@ -6,8 +6,8 @@ const Car = require('./car')
 const Bill = sequelize.define('Bill', {
     bill_ID: {
         type: DataTypes.UUID,
-        primaryKey: true,
-        defaultValue: sequelize.UUIDV4
+        defaultValue: sequelize.Sequelize.UUIDV4,
+        primaryKey: true
     },
     car_number: {
         type: DataTypes.STRING,
@@ -15,7 +15,7 @@ const Bill = sequelize.define('Bill', {
         defaultValue: null,
         references: {
             model: Car,
-            key: Car.car_number,
+            key: 'car_number',
             deferrable: Deferrable.INITIALLY_IMMEDIATE
         }
     },
@@ -25,7 +25,7 @@ const Bill = sequelize.define('Bill', {
         defaultValue: null,
         references: {
             model: User,
-            key: User.user_ID,
+            key: 'user_ID',
             deferrable: Deferrable.INITIALLY_IMMEDIATE
         }
     },
@@ -37,19 +37,24 @@ const Bill = sequelize.define('Bill', {
         type: DataTypes.INTEGER
     },
     isPaid: {
-        type: DataTypes.INTEGER
+        type: DataTypes.INTEGER,
+        allowNull: true
     },
     begin_time: {
         type: DataTypes.DATE
     },
     arrive_time: {
-        type: DataTypes.DATE
+        type: DataTypes.DATE,
+        allowNull: true
     },
     leave_time: {
-        type: DataTypes.DATE
+        type: DataTypes.DATE,
+        allowNull: true
+    },
+    end_time: {
+        type: DataTypes.DATE,
     }
 }, {
-    modelName: 'bills'
 })
 
 module.exports = Bill

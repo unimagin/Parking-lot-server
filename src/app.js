@@ -4,6 +4,7 @@ const userRouter = require('./routers/user')
 const parkRouter = require('./routers/park')
 const carRouter = require('./routers/car')
 const reservationRouter = require('./routers/reservation')
+const billRouter = require('./routers/bill')
 
 const app = express()
 
@@ -20,5 +21,6 @@ app.use(userRouter)
 app.use(parkRouter)
 app.use(carRouter)
 app.use(reservationRouter)
+app.use(billRouter)
 
 module.exports = app

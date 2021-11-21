@@ -3,6 +3,7 @@ const Car = require('./models/car')
 const User = require('./models/user')
 const UserCar = require('./models/usercar')
 const Reservation = require('./models/reservation')
+const Bill = require('./models/bill')
 
 // synchronize models
 async function sync () {

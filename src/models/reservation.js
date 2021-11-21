@@ -35,6 +35,9 @@ const Reservation = sequelize.define('Reservation', {
     end_time: {
         type: DataTypes.DATE
     },
+    arrive_time: {
+        type: DataTypes.DATE
+    },
     used: {
         type: DataTypes.INTEGER,
         defaultValue: 0
