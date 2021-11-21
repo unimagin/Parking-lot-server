@@ -3,7 +3,6 @@ const bcrypt = require('bcryptjs')
 const User = require('../models/user')
 const Bill = require('../models/bill')
 const Reservation = require('../models/reservation')
-const { request, response, resource } = require('../app')
 const router = new express.Router()
 
 router.post('/user/register', async (request, response) => {

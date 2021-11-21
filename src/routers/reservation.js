@@ -42,7 +42,7 @@ router.post('/user/appoint', authentication, async (request, response) => {
           return x1.begin_timestamp - x2.begin_timestamp
       })
       
-      let left = 0, right = reservs.length - 1, mid, available = true
+      let left = 0, right = reservs.length - 1, mid, avaliable = true
       while (left <= right) {
         mid = Math.floor((left + right)/2)
         if (reservs[mid].end_timestamp <= begin_timestamp) {
@@ -52,17 +52,17 @@ router.post('/user/appoint', authentication, async (request, response) => {
           right = mid - 1
         }
         else {
-          available = false
+          avaliable = false
           break
         }
       }
-      if (!available) {
+      if (!avaliable) {
         throw new Error('Appointment failed. Time is not availble')
       }
       await Reservation.create({user_ID, car_number, parking_number, begin_time, end_time})
-      response.send('Appointment success')
+      response.send({state:true})
   } catch(error) {
-      response.status(400).send(error.message)
+      response.status(400).send({state: false})
   }
 })
 
