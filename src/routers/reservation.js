@@ -23,27 +23,8 @@ router.post('/reservation/change_used', async (request, response) => {
   }
 })
 
-router.post('/reservation/save_reservation', async (request, response) => {
-  const { reservation_ID, begin_time, end_time } = request.body
-  try {
-    //判断是否有空闲
-    const reservation = await Reservation.findOne({ where: { reservation_ID: reservation_ID } })
-    if (reservation == null) {
-      throw new Error("Reservation not exist!")
-    }
-    reservation.update({
-      begin_time: new Date(begin_time),
-      end_time: new Date(end_time)
-    })
-    response.send('success change time')
-  }
-  catch (error) {
-    response.status(400).send(error)
-  }
-})
-
 router.post('/user/appoint', authentication, async (request, response) => {
-  let { car_number, parking_number, begin_time, end_time } = request.body
+  let { car_number, parking_number, begin_time, end_time, reservation_ID } = request.body
   const { user_ID } = request.user
   try {
     begin_time = new Date(begin_time)
@@ -56,29 +37,29 @@ router.post('/user/appoint', authentication, async (request, response) => {
       x.end_timestamp = Date.parse(x.end_time)
       return x
     })
-    reservs = reservs.sort((x1, x2) => {
-      return x1.begin_timestamp - x2.begin_timestamp
-    })
-
-    let left = 0, right = reservs.length - 1, mid, avaliable = true
-    while (left <= right) {
-      mid = Math.floor((left + right) / 2)
-      if (reservs[mid].end_timestamp <= begin_timestamp) {
-        left = mid + 1
-      }
-      else if (reservs[mid].begin_timestamp >= end_timestamp) {
-        right = mid - 1
-      }
-      else {
-        avaliable = false
-        break
-      }
+    let available = true
+    for (let i = 0; i < reservs.length; ++i) {
+      if (reservs[i].reservation_ID == reservation_ID) { continue }
+      else if (reservs[i].end_timestamp <= begin_timestamp || reservs[i].begin_timestamp >= end_timestamp) { continue }
+      available = false
+      break
     }
-    if (!avaliable) {
+    if (!available) {
       throw new Error('Appointment failed. Time is not availble')
     }
-    await Reservation.create({ user_ID, car_number, parking_number, begin_time, end_time })
-    response.send({ state: true })
+    let reservation = null
+    if (reservation_ID != undefined) { 
+      reservation = await Reservation.findByPk(reservation_ID)
+    }
+    if (reservation == null) { //请求中没有id，或传来不存在的id，新建
+      reservation = await Reservation.create({ user_ID, car_number, parking_number, begin_time, end_time })
+    }
+    else { //修改
+      reservation.begin_time = begin_time
+      reservation.end_time = end_time
+      await reservation.save()
+    }
+    response.send({ state: true, reservation })
   } catch (error) {
     response.status(400).send({ state: false })
   }
