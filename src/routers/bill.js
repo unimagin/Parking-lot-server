@@ -3,7 +3,7 @@ const Bill = require('../models/bill')
 const Reservation = require('../models/reservation')
 const router = new express.Router()
 
-router.post('/bill/generate_bill', async (request, response) => {
+router.post('/user/bill/generate_bill', async (request, response) => {
   const reservation = request.body
   try {
     const begin = new Date(reservation.begin_time)

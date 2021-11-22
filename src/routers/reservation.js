@@ -3,7 +3,7 @@ const Reservation = require('../models/reservation')
 const authentication = require('../middleware/auth')
 const router = new express.Router()
 
-router.post('/reservation/change_used', async (request, response) => {
+router.post('/user/reservation/change_used', async (request, response) => {
   const reservation_ID = request.body.reservation_ID
   const arrive_time = new Date(request.body.arrive_time)
   try {

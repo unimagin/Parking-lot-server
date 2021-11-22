@@ -5,7 +5,7 @@ const Bill = require('../models/bill')
 const Reservation = require('../models/reservation')
 const router = new express.Router()
 
-router.post('/user/register', async (request, response) => {
+router.post('/register', async (request, response) => {
     const body = request.body
     try {
         body.password = await bcrypt.hash(body.password, 8)
@@ -17,7 +17,7 @@ router.post('/user/register', async (request, response) => {
     }
 })
 
-router.post('/user/login', async (request, response) => {
+router.post('/login', async (request, response) => {
     try {
         const { phone, password } = request.body
         const user = await User.findByCredentials(phone, password)
