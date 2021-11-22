@@ -4,8 +4,7 @@ const authentication = require('../middleware/auth')
 const router = new express.Router()
 
 router.post('/user/reservation/change_used', async (request, response) => {
-  const reservation_ID = request.body.reservation_ID
-  const arrive_time = new Date(request.body.arrive_time)
+  const { reservation_ID, arrive_time } = request.body
   try {
     const reservation = await Reservation.findOne({ where: { reservation_ID: reservation_ID } })
     if (reservation == null) {
@@ -48,7 +47,7 @@ router.post('/user/appoint', authentication, async (request, response) => {
       throw new Error('Appointment failed. Time is not availble')
     }
     let reservation = null
-    if (reservation_ID != undefined) { 
+    if (reservation_ID != undefined) {
       reservation = await Reservation.findByPk(reservation_ID)
     }
     if (reservation == null) { //请求中没有id，或传来不存在的id，新建
