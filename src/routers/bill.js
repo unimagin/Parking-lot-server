@@ -1,3 +1,4 @@
+const { response } = require('express')
 const express = require('express')
 const Bill = require('../models/bill')
 const Reservation = require('../models/reservation')
@@ -42,6 +43,24 @@ router.post('/user/bill/generate_bill', async (request, response) => {
     })
     response.send('success generate')
   } catch (error) {
+    response.status(400).send(error)
+  }
+})
+
+router.post('/user/bill/pay_bill', async (request, response) => {
+  const bill_ID = request.body
+  try {
+    const bill = await Bill.findOne({ where: bill_ID })
+    if (bill == null) {
+      throw new Error('Bill not exist')
+    }
+    bill.update({
+      isPaid: 1
+    })
+    bill.save()
+    response.send('pay success')
+  }
+  catch (error) {
     response.status(400).send(error)
   }
 })

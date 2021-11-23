@@ -22,6 +22,24 @@ router.post('/user/reservation/change_used', async (request, response) => {
   }
 })
 
+router.post('/user/reservation/modify_reservation', async (request, response) => {
+  const { reservation_ID, car_number } = request.body
+  try {
+    const reservation = await Reservation.findOne({ where: { reservation_ID: reservation_ID } })
+    if (reservation == null) {
+      throw new Error("Reservation not exist")
+    }
+    reservation.update({
+      car_number: car_number
+    })
+    reservation.save()
+    response.send('success modify')
+  }
+  catch (error) {
+    response.status(400).send(error)
+  }
+})
+
 router.post('/user/appoint', authentication, async (request, response) => {
   let { car_number, parking_number, begin_time, end_time, reservation_ID } = request.body
   const { user_ID } = request.user
