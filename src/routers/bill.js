@@ -7,13 +7,13 @@ const router = new express.Router()
 router.post('/user/bill/generate_bill', async (request, response) => {
   const reservation = request.body
   try {
-    const begin = new Date(reservation.begin_time)
+    const begin = reservation.begin_time
     const begin_time = begin.getTime()
-    const end = new Date(reservation.end_time)
+    const end = reservation.end_time
     const end_time = end.getTime()
     const leave = new Date()
     const leave_time = leave.getTime()
-    const arrive = new Date(reservation.arrive_time)
+    const arrive = reservation.arrive_time
     const arrive_time = arrive.getTime()
     let status = 0, money = 0
     if (arrive_time > begin_time) {

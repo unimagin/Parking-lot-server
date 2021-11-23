@@ -87,6 +87,8 @@ router.post('/user/cancel_reservation', async (request, response) => {
                 car_number: reservation.car_number,
                 user_ID: reservation.user_ID,
                 arrive_time: null,
+                begin_time: reservation.begin_time,
+                end_time: reservation.end_time,
                 leave_time: null,
                 money: null,
                 status: 2,
