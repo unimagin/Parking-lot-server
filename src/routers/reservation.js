@@ -12,7 +12,7 @@ router.post('/user/reservation/change_used', async (request, response) => {
     }
     reservation.update({
       used: 1,
-      arrive_time: arrive_time
+      arrive_time: new Date(arrive_time)
     })
     reservation.save()
     response.send('using')

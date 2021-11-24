@@ -1,4 +1,3 @@
-const { response } = require('express')
 const express = require('express')
 const Bill = require('../models/bill')
 const Reservation = require('../models/reservation')
@@ -7,13 +6,13 @@ const router = new express.Router()
 router.post('/user/bill/generate_bill', async (request, response) => {
   const reservation = request.body
   try {
-    const begin = reservation.begin_time
+    const begin = new Date(reservation.begin_time)
     const begin_time = begin.getTime()
-    const end = reservation.end_time
+    const end = new Date(reservation.end_time)
     const end_time = end.getTime()
     const leave = new Date()
     const leave_time = leave.getTime()
-    const arrive = reservation.arrive_time
+    const arrive = new Date(reservation.arrive_time)
     const arrive_time = arrive.getTime()
     let status = 0, money = 0
     if (arrive_time > begin_time) {
@@ -29,10 +28,10 @@ router.post('/user/bill/generate_bill', async (request, response) => {
       {
         car_number: reservation.car_number,
         user_ID: reservation.user_ID,
-        arrive_time: arrive_time,
-        leave_time: leave_time,
-        begin_time: begin_time,
-        end_time: end_time,
+        arrive_time: arrive,
+        leave_time: leave,
+        begin_time: begin,
+        end_time: end,
         money: 1,
         status: status,
         isPaid: 0
