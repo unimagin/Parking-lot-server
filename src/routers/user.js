@@ -95,7 +95,8 @@ router.post('/user/cancel_reservation', async (request, response) => {
                 isPaid: null
             }
         )
-        response.send('success')
+        const reservations = await Reservation.findAll({ where: { user_ID: reservation.user_ID } })
+        response.send({ reservations })
     }
     catch (error) {
         response.status(400).send(error)

@@ -40,7 +40,8 @@ router.post('/user/bill/generate_bill', async (request, response) => {
     await Reservation.destroy({
       where: { reservation_ID: reservation.reservation_ID }
     })
-    response.send('success generate')
+    const reservations = await Reservation.findAll({ where: { user_ID: reservation.user_ID } })
+    response.send({ reservations })
   } catch (error) {
     response.status(400).send(error)
   }
