@@ -6,6 +6,7 @@ const Reservation = require('../models/reservation')
 const {request, response} = require("express");
 const router = new express.Router()
 const multer = require('multer');
+const fs = require('fs')
 var upload = multer({dest: '/usr/share/nginx/image'})//设置存储位置
 
 router.post('/register', async (request, response) => {
@@ -103,15 +104,24 @@ router.post('/user/cancel_reservation', async (request, response) => {
 
 router.post('/user/image/upload', upload.single('avatar'), async (request, response) => {
     const phone = request.body.filename
-    try {
-        const user = await User.updateImageByPhone(phone, request.file.filename)
+    fs.readFile(request.file.path, async (err, data) => {
+        //如果读取失败
+        if (err) {
+            return response.send('上传失败')
+        }
+        let extname = request.file.mimetype.split('/')[1]
+        let filename = phone + '.' + extname
+        const user = await User.updateImageByPhone(phone, filename)
         if (user == null) {
             throw new Error("Saved failed!")
         }
-        response.status(200).send({message: "ok"})
-    } catch (error) {
-        response.status(400).send(error)
-    }
+        fs.writeFile(('/usr/share/nginx/image/' + filename), data, (err) => {
+            if (err) {
+                return response.status(400).send('写入失败')
+            }
+            response.status(200).send({user: user})
+        });
+    });
 })
 
 module.exports = router

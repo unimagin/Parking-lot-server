@@ -37,13 +37,13 @@ class User extends Model {
         return user
     }
 
-    static async updateImageByPhone(phone, imageUrl) {
+    static async updateImageByPhone(phone, filename) {
         const user = await User.findOne({where: {phone: phone}})
         if (user == null) {
             throw new Error("Imaged failed!")
         }
         user.update({
-            imageUrl: imageUrl
+            imageUrl: "http://82.156.168.246:3001/" + filename
         })
         user.save()
         return user
