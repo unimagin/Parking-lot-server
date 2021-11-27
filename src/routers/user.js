@@ -109,8 +109,9 @@ router.post('/user/image/upload', upload.single('avatar'), async (request, respo
         if (err) {
             return response.send('上传失败')
         }
+        let time = Date.parse(new Date()).toString() + Math.ceil(Math.random() * 2021).toString()
         let extname = request.file.mimetype.split('/')[1]
-        let filename = phone + '.' + extname
+        let filename = time + '.' + extname
         const user = await User.updateImageByPhone(phone, filename)
         if (user == null) {
             throw new Error("Saved failed!")
