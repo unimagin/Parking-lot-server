@@ -10,14 +10,6 @@ jobs:
       # 切换分支
       - name: Checkout
         uses: actions/checkout@main
-      
-      # Deploy
-      #- name: SSH Execute Commands
-       # uses: JimCronqvist/action-ssh@0.1.1
-       # with:
-        #  hosts: 'nkcs@82.156.168.246'
-         # privateKey: ${{ secrets.PRIVATE_KEY }}
-          #command: bash /home/nkcs/autoDeploy.sh 1>stdout.txt 2>stderr.txt
           
       - name: deploy file to server
         uses: wlixcc/SFTP-Deploy-Action@v1.0 
