@@ -135,7 +135,7 @@ router.post('/user/add_balance', authentication, async (request, response) => {
             balance: balance
         })
         user.save()
-        response.send({ user })
+        response.send({ balance: user.balance })
     }
     catch (error) {
         response.status(400).send(error)

@@ -87,7 +87,7 @@ router.post('/user/bill/pay_bill', authentication, async (request, response) => 
         balance: balance
       })
       user.save()
-      response.send({ fail: false, user })
+      response.send({ fail: false, balance: user.balance })
     }
   }
   catch (error) {
