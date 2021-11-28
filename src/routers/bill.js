@@ -1,9 +1,27 @@
 const express = require('express')
 const Bill = require('../models/bill')
+const User = require('../models/user')
 const Reservation = require('../models/reservation')
+const authentication = require('../middleware/auth')
 const router = new express.Router()
 
-router.post('/user/bill/generate_bill', async (request, response) => {
+router.post('/user/bill/generate_bill', authentication, async (request, response) => {
+  const user = request.user
+  const kind = user.kind
+  let unit = 0, delay_unit = 0
+  switch (kind) {
+    case 0:
+      unit = 5
+      delay_unit = 10
+      break
+    case 1:
+      unit = 2.5
+      delay_unit = 5
+      break
+    case 2:
+      unit = 1
+      delay_unit = 8
+  }
   const reservation = request.body
   try {
     const begin = new Date(reservation.begin_time)
@@ -14,15 +32,16 @@ router.post('/user/bill/generate_bill', async (request, response) => {
     const leave_time = leave.getTime()
     const arrive = new Date(reservation.arrive_time)
     const arrive_time = arrive.getTime()
-    let status = 0, money = 0
+    console.log(end, leave, end_time, leave_time)
+    let status = 0, money = Math.ceil((end_time - begin_time) / 3600000.0) * unit
     if (arrive_time > begin_time) {
       status = 1
     }
     if (leave_time > end_time) {
       status = 3
-    }
-    if (arrive_time > begin_time && leave_time > end_time) {
-      status = 4
+      if (arrive_time > begin_time)
+        status = 4
+      money += Math.ceil((leave_time - end_time) / 3600000.0) * delay_unit
     }
     await Bill.create(
       {
@@ -32,7 +51,7 @@ router.post('/user/bill/generate_bill', async (request, response) => {
         leave_time: leave,
         begin_time: begin,
         end_time: end,
-        money: 1,
+        money: money,
         status: status,
         isPaid: 0
       }
@@ -47,18 +66,29 @@ router.post('/user/bill/generate_bill', async (request, response) => {
   }
 })
 
-router.post('/user/bill/pay_bill', async (request, response) => {
+router.post('/user/bill/pay_bill', authentication, async (request, response) => {
+  const user = request.user
   const bill_ID = request.body
   try {
     const bill = await Bill.findOne({ where: bill_ID })
     if (bill == null) {
       throw new Error('Bill not exist')
     }
-    bill.update({
-      isPaid: 1
-    })
-    bill.save()
-    response.send('pay success')
+    const balance = user.balance - bill.money
+    if (balance < 0) {
+      response.send({ fail: true })
+    }
+    else {
+      bill.update({
+        isPaid: 1
+      })
+      bill.save()
+      user.update({
+        balance: balance
+      })
+      user.save()
+      response.send({ fail: false, user })
+    }
   }
   catch (error) {
     response.status(400).send(error)
