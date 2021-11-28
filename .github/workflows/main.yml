@@ -12,6 +12,22 @@ jobs:
         uses: actions/checkout@main
       
       # Deploy
+      #- name: SSH Execute Commands
+       # uses: JimCronqvist/action-ssh@0.1.1
+       # with:
+        #  hosts: 'nkcs@82.156.168.246'
+         # privateKey: ${{ secrets.PRIVATE_KEY }}
+          #command: bash /home/nkcs/autoDeploy.sh 1>stdout.txt 2>stderr.txt
+          
+      - name: deploy file to server
+        uses: wlixcc/SFTP-Deploy-Action@v1.0 
+        with:  
+          username: 'nkcs'   #ssh user name
+          server: '82.156.168.246' #引用之前创建好的secret
+          ssh_private_key: ${{ secrets.PRIVATE_KEY }} #引用之前创建好的secret
+          local_path: './src'  # 对应我们项目build的文件夹路径
+          remote_path: '/home/nkcs/server'
+          
       - name: SSH Execute Commands
         uses: JimCronqvist/action-ssh@0.1.1
         with:
