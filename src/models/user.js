@@ -88,6 +88,18 @@ User.init({
     balance: {
         type: DataTypes.DOUBLE,
         defaultValue: 0.0
+    },
+    violation: {
+        type: DataTypes.INTEGER,
+        defaultValue: 0
+    },
+    total: {
+        type: DataTypes.INTEGER,
+        defaultValue: 0
+    },
+    cancel: {
+        type: DataTypes.INTEGER,
+        defaultValue: 0
     }
 }, {
     sequelize

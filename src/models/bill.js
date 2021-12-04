@@ -40,6 +40,10 @@ const Bill = sequelize.define('Bill', {
         type: DataTypes.INTEGER,
         allowNull: true
     },
+    r_date: {
+        type: DataTypes.DATEONLY,
+        allowNull: false
+    },
     begin_time: {
         type: DataTypes.DATE
     },
