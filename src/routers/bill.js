@@ -108,35 +108,5 @@ router.post('/user/bill/pay_bill', authentication, async (request, response) => 
   }
 })
 
-router.post('/data/bill_data', async (request, response) => {
-  category = request.body.category
-  let totals = [], reals = []
-  try {
-    for (var i = 0; i < category.length; i++) {
-      date = new Date(category[i]);
-      let cancels = await Bill.findAll({ where: { r_date: date, status: 2 } })
-      if (cancels == null) {
-        cancels = 0
-      }
-      else {
-        cancels = cancels.length
-      }
-      let total = await Bill.findAll({ where: { r_date: date } })
-      if (total == null) {
-        total = 0
-      }
-      else {
-        total = total.length
-      }
-      const real = total - cancels
-      totals.push(total)
-      reals.push(real)
-    }
-    response.send({ totals, reals })
-  }
-  catch (error) {
-    response.status(400).send(error)
-  }
-})
 
 module.exports = router

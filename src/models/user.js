@@ -1,19 +1,19 @@
-const { Model, Sequelize, DataTypes } = require('sequelize')
+const {Model, Sequelize, DataTypes} = require('sequelize')
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcryptjs')
 const sequelize = require('../db/mysql')
 
 class User extends Model {
-    async generateAuthToken () {
+    async generateAuthToken() {
         const user = this
-        const token = jwt.sign({ user_ID: user.user_ID }, process.env.JWT_SECRET)
+        const token = jwt.sign({user_ID: user.user_ID}, process.env.JWT_SECRET)
         user.token = token
         await user.save()
         return token
     }
 
-    static async findByCredentials (phone, password) {
-        const user = await User.findOne({ where: { phone: phone } })
+    static async findByCredentials(phone, password) {
+        const user = await User.findOne({where: {phone: phone}})
         if (!user) {
             throw new Error('User does not exist')
         }
@@ -24,8 +24,8 @@ class User extends Model {
         return user
     }
 
-    static async updateByPhone (user_data) {
-        const user = await User.findOne({ where: { phone: user_data.phone } })
+    static async updateByPhone(user_data) {
+        const user = await User.findOne({where: {phone: user_data.phone}})
         if (user == null) {
             throw new Error("Edition failed!")
         }
@@ -37,8 +37,8 @@ class User extends Model {
         return user
     }
 
-    static async updateImageByPhone (phone, filename) {
-        const user = await User.findOne({ where: { phone: phone } })
+    static async updateImageByPhone(phone, filename) {
+        const user = await User.findOne({where: {phone: phone}})
         if (user == null) {
             throw new Error("Imaged failed!")
         }
@@ -47,6 +47,32 @@ class User extends Model {
         })
         user.save()
         return user
+    }
+
+    static async addBlackList(phone) {
+        const user = await User.findOne({where: {phone: phone}})
+        if (user == null) {
+            throw new Error("add failed!")
+        }
+        user.update({
+            kind: 4
+        })
+        user.save()
+        return user
+    }
+
+    static async moveBlackList(phone) {
+        const user = await User.findOne({where: {phone: phone}})
+        if (user == null) {
+            throw new Error("add failed!")
+        }
+        if (user.kind != 4) {
+            return
+        }
+        user.update({
+            kind: 0
+        })
+        user.save()
     }
 }
 

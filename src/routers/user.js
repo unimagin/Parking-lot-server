@@ -149,27 +149,5 @@ router.post('/user/add_balance', authentication, async (request, response) => {
     }
 })
 
-router.get('/data/user_kind', async (request, response) => {
-    try {
-        const normal = await User.findAll({ where: { kind: 0 } })
-        const vip = await User.findAll({ where: { kind: 1 } })
-        const contract = await User.findAll({ where: { kind: 2 } })
-        const tmp = await User.findAll({ where: { kind: 3 } })
-        response.send({ normal: normal.length, vip: vip.length, contract: contract.length, tmp: tmp.length })
-    }
-    catch (error) {
-        response.status(400).send(error)
-    }
-})
-
-router.get('/data/user_data', async (request, response) => {
-    try {
-        const users = await User.findAll()
-        response.send({ users })
-    }
-    catch (error) {
-        response.status(400).send(error)
-    }
-})
 
 module.exports = router
