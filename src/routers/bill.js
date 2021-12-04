@@ -7,6 +7,7 @@ const router = new express.Router()
 
 router.post('/user/bill/generate_bill', authentication, async (request, response) => {
   const user = request.user
+  let violation = user.violation
   const kind = user.kind
   let unit = 0, delay_unit = 0
   switch (kind) {
@@ -48,8 +49,9 @@ router.post('/user/bill/generate_bill', authentication, async (request, response
       money += Math.ceil((leave_time - end_time) / 3600000.0) * delay_unit
     }
     if (status != 0) {
+      violation += 1
       user.update({
-        violation: user.violation + 1
+        violation: violation
       })
       user.save()
     }
@@ -71,7 +73,7 @@ router.post('/user/bill/generate_bill', authentication, async (request, response
       where: { reservation_ID: reservation.reservation_ID }
     })
     const reservations = await Reservation.findAll({ where: { user_ID: reservation.user_ID } })
-    response.send({ reservations })
+    response.send({ reservations, violation })
   } catch (error) {
     response.status(400).send(error)
   }
