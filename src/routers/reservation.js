@@ -41,9 +41,10 @@ router.post('/user/reservation/modify_reservation', async (request, response) =>
 })
 
 router.post('/user/appoint', authentication, async (request, response) => {
-  let { car_number, parking_number, begin_time, end_time, reservation_ID } = request.body
+  let { car_number, parking_number, begin_time, end_time, reservation_ID, r_date } = request.body
   const { user_ID } = request.user
   try {
+    r_date = new Date(r_date)
     begin_time = new Date(begin_time)
     end_time = new Date(end_time)
     begin_timestamp = Date.parse(begin_time)
@@ -69,7 +70,7 @@ router.post('/user/appoint', authentication, async (request, response) => {
       reservation = await Reservation.findByPk(reservation_ID)
     }
     if (reservation == null) { //请求中没有id，或传来不存在的id，新建
-      reservation = await Reservation.create({ user_ID, car_number, parking_number, begin_time, end_time })
+      reservation = await Reservation.create({ user_ID, car_number, parking_number, r_date, begin_time, end_time })
     }
     else { //修改
       reservation.begin_time = begin_time

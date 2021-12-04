@@ -76,8 +76,9 @@ router.post('/user/look_reservation', async (request, response) => {
     }
 })
 
-router.post('/user/cancel_reservation', async (request, response) => {
+router.post('/user/cancel_reservation', authentication, async (request, response) => {
     const reservation = request.body
+    const user = request.user
     try {
         await Reservation.destroy({
             where: { reservation_ID: reservation.reservation_ID }
@@ -90,11 +91,17 @@ router.post('/user/cancel_reservation', async (request, response) => {
                 begin_time: new Date(reservation.begin_time),
                 end_time: new Date(reservation.end_time),
                 leave_time: null,
+                r_date: reservation.r_date,
                 money: null,
                 status: 2,
                 isPaid: null
             }
         )
+        user.update({
+            cancel: user.cancel + 1,
+            total: user.total + 1
+        })
+        user.save()
         const reservations = await Reservation.findAll({ where: { user_ID: reservation.user_ID } })
         response.send({ reservations })
     } catch (error) {
@@ -136,6 +143,29 @@ router.post('/user/add_balance', authentication, async (request, response) => {
         })
         user.save()
         response.send({ balance: user.balance })
+    }
+    catch (error) {
+        response.status(400).send(error)
+    }
+})
+
+router.get('/data/user_kind', async (request, response) => {
+    try {
+        const normal = await User.findAll({ where: { kind: 0 } })
+        const vip = await User.findAll({ where: { kind: 1 } })
+        const contract = await User.findAll({ where: { kind: 2 } })
+        const tmp = await User.findAll({ where: { kind: 3 } })
+        response.send({ normal: normal.length, vip: vip.length, contract: contract.length, tmp: tmp.length })
+    }
+    catch (error) {
+        response.status(400).send(error)
+    }
+})
+
+router.get('/data/user_data', async (request, response) => {
+    try {
+        const users = await User.findAll()
+        response.send({ users })
     }
     catch (error) {
         response.status(400).send(error)

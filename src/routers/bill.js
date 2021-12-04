@@ -7,6 +7,7 @@ const router = new express.Router()
 
 router.post('/user/bill/generate_bill', authentication, async (request, response) => {
   const user = request.user
+  let violation = user.violation
   const kind = user.kind
   let unit = 0, delay_unit = 0
   switch (kind) {
@@ -24,6 +25,10 @@ router.post('/user/bill/generate_bill', authentication, async (request, response
   }
   const reservation = request.body
   try {
+    user.update({
+      total: user.total + 1
+    })
+    user.save()
     const begin = new Date(reservation.begin_time)
     const begin_time = begin.getTime()
     const end = new Date(reservation.end_time)
@@ -32,7 +37,7 @@ router.post('/user/bill/generate_bill', authentication, async (request, response
     const leave_time = leave.getTime()
     const arrive = new Date(reservation.arrive_time)
     const arrive_time = arrive.getTime()
-    console.log(end, leave, end_time, leave_time)
+    const r_date = new Date(reservation.r_date)
     let status = 0, money = Math.ceil((end_time - begin_time) / 3600000.0) * unit
     if (arrive_time > begin_time) {
       status = 1
@@ -42,6 +47,13 @@ router.post('/user/bill/generate_bill', authentication, async (request, response
       if (arrive_time > begin_time)
         status = 4
       money += Math.ceil((leave_time - end_time) / 3600000.0) * delay_unit
+    }
+    if (status != 0) {
+      violation += 1
+      user.update({
+        violation: violation
+      })
+      user.save()
     }
     await Bill.create(
       {
@@ -53,14 +65,15 @@ router.post('/user/bill/generate_bill', authentication, async (request, response
         end_time: end,
         money: money,
         status: status,
-        isPaid: 0
+        isPaid: 0,
+        r_date: r_date
       }
     )
     await Reservation.destroy({
       where: { reservation_ID: reservation.reservation_ID }
     })
     const reservations = await Reservation.findAll({ where: { user_ID: reservation.user_ID } })
-    response.send({ reservations })
+    response.send({ reservations, violation })
   } catch (error) {
     response.status(400).send(error)
   }
@@ -89,6 +102,37 @@ router.post('/user/bill/pay_bill', authentication, async (request, response) => 
       user.save()
       response.send({ fail: false, balance: user.balance })
     }
+  }
+  catch (error) {
+    response.status(400).send(error)
+  }
+})
+
+router.post('/data/bill_data', async (request, response) => {
+  category = request.body.category
+  let totals = [], reals = []
+  try {
+    for (var i = 0; i < category.length; i++) {
+      date = new Date(category[i]);
+      let cancels = await Bill.findAll({ where: { r_date: date, status: 2 } })
+      if (cancels == null) {
+        cancels = 0
+      }
+      else {
+        cancels = cancels.length
+      }
+      let total = await Bill.findAll({ where: { r_date: date } })
+      if (total == null) {
+        total = 0
+      }
+      else {
+        total = total.length
+      }
+      const real = total - cancels
+      totals.push(total)
+      reals.push(real)
+    }
+    response.send({ totals, reals })
   }
   catch (error) {
     response.status(400).send(error)

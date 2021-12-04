@@ -9,6 +9,10 @@ const Reservation = sequelize.define('Reservation', {
         primaryKey: true,
         defaultValue: Sequelize.UUIDV4
     },
+    r_date: {
+        type: DataTypes.DATEONLY,
+        allowNull: false
+    },
     begin_time: {
         type: DataTypes.DATE,
         allowNull: false
