@@ -1,7 +1,5 @@
-const { DataTypes, Deferrable } = require('sequelize')
+const { DataTypes } = require('sequelize')
 const sequelize = require('../db/mysql')
-const User = require('./user')
-const Car = require('./car')
 
 const Park = sequelize.define('Park', {
     park_number: {
@@ -11,25 +9,14 @@ const Park = sequelize.define('Park', {
     },
     status: {
         type: DataTypes.INTEGER,
+        defaultValue: 0,
+        allowNull: false
+    },
+    floor_level: {
+        type: DataTypes.INTEGER,
         allowNull: false
     }
 }, {
-})
-
-Park.belongsTo(User, {
-    foreignKey: {
-        name: 'user_ID',
-        allowNull: false
-    },
-    onDelete: 'RESTRICT'
-})
-
-Park.belongsTo(Car, {
-    foreignKey: {
-        name: 'car_number',
-        allowNull: false
-    },
-    onDelete: 'RESTRICT'
 })
 
 module.exports = Park
