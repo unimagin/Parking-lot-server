@@ -102,15 +102,25 @@ router.post('/user/reservation', async (request, response) => {
     }
 })
 
-router.post('/user/reservation', authentication, async (request, response) => {
+router.post('/user/park/repark', authentication, async (request, response) => {
     try {
         const reservation = await Reservation.findByPk(request.body.reservation_ID)
         if (reservation == null) {
-            throw new Error("Reservation not found")
+            throw new Error('Reservation not found')
         }
-        const begin_time = reservation.begin_time.getTime()
-        const end_time = reservation.end_time.getTime()
-        response.send()
+        let avaliable = false
+        const total_parks = process.env.TOTAL_PARKS
+        for (let i = 1; i <= total_parks; ++i) {
+            if (i == reservation.parking_number) { continue }
+            avaliable = await Reservation.isAvailable(i, reservation.begin_time, reservation.end_time)
+            if (avaliable) { //已找到新的同时段可用车位，调整预约车位
+                reservation.parking_number = i
+                await reservation.save()
+                break
+            }
+        }
+        if (!avaliable) { throw new Error('Sorry, there is no avaiable place') } // 没有相同时段可用车位
+        response.send({ parking_number: reservation.parking_number })
     } catch (error) {
         response.status(400).send(error.message)
     }
