@@ -126,4 +126,30 @@ router.post('/user/park/repark', authentication, async (request, response) => {
     }
 })
 
+router.post('/user/park/parkWithoutAppoint', authentication, async (request, response) => {
+    try {
+        let { car_number, begin_time, end_time } = request.body
+        const user = request.user
+        begin_time = new Date(begin_time)
+        end_time = new Date(end_time)
+        const r_date = new Date(begin_time.toDateString())
+        let parking_number = null
+        let avaliable = false
+        const total_parks = process.env.TOTAL_PARKS
+        for (let i = 1; i <= total_parks; ++i) {
+            avaliable = await Reservation.isAvailable(i, begin_time, end_time)
+            if (avaliable) { //找到车位，创建预约
+                parking_number = i
+                await Reservation.create({ user_ID: user.user_ID, car_number, parking_number, r_date, begin_time, end_time })
+                break
+            }
+        }
+        if (!avaliable) { throw new Error('Sorry, there is no avaiable place') } // 没有相同时段可用车位
+        response.send({ parking_number })
+    } catch (error) {
+        response.status(400).send(error.message)
+    }
+
+})
+
 module.exports = router
