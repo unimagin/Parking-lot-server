@@ -1,6 +1,7 @@
 const express = require('express')
 const { Op } = require('sequelize');
 const Reservation = require('../models/reservation')
+const Park = require('../models/park')
 const authentication = require('../middleware/auth')
 const router = new express.Router()
 
@@ -15,6 +16,9 @@ router.post('/user/reservation/change_used', async (request, response) => {
             used: 1,
             arrive_time: new Date(arrive_time)
         })
+        const park = await Park.findOne({ where: { parking_number: reservation.parking_number } })
+        park.parking_number = 1 //修改车位状态
+        await park.save()
         reservation.save()
         response.send('using')
     }
@@ -48,35 +52,21 @@ router.post('/user/appoint', authentication, async (request, response) => {
         r_date = new Date(r_date)
         begin_time = new Date(begin_time)
         end_time = new Date(end_time)
-        begin_timestamp = Date.parse(begin_time)
-        end_timestamp = Date.parse(end_time)
-        let reservs = await Reservation.findAll({ where: { parking_number } })
-        reservs = reservs.map((x) => {
-            x.begin_timestamp = Date.parse(x.begin_time)
-            x.end_timestamp = Date.parse(x.end_time)
-            return x
-        })
-        let available = true
-        for (let i = 0; i < reservs.length; ++i) {
-            if (reservs[i].reservation_ID == reservation_ID) { continue }
-            else if (reservs[i].end_timestamp <= begin_timestamp || reservs[i].begin_timestamp >= end_timestamp) { continue }
-            available = false
-            break
-        }
-        if (!available) {
-            throw new Error('Appointment failed. Time is not availble')
-        }
         let reservation = null
-        if (reservation_ID != undefined) {
-            reservation = await Reservation.findByPk(reservation_ID)
-        }
-        if (reservation == null) { //请求中没有id，或传来不存在的id，新建
-            reservation = await Reservation.create({ user_ID, car_number, parking_number, r_date, begin_time, end_time })
-        }
-        else { //修改
-            reservation.begin_time = begin_time
-            reservation.end_time = end_time
-            await reservation.save()
+        let available = await Reservation.isAvailable(parking_number, begin_time, end_time, reservation_ID)
+        if (available) {
+            if (reservation_ID == undefined) { //添加预约
+                reservation = await Reservation.create({ user_ID, car_number, parking_number, r_date, begin_time, end_time })
+            } else { //修改预约
+                reservation = await Reservation.findByPk(reservation_ID)
+                reservation.parking_number = parking_number
+                reservation.begin_time = begin_time
+                reservation.end_time = end_time
+                reservation.r_date = r_date
+                await reservation.save()
+            }
+        } else {
+            throw new Error("Time is not available")
         }
         response.send({ state: true, reservation })
     } catch (error) {

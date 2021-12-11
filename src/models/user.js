@@ -1,4 +1,4 @@
-const {Model, Sequelize, DataTypes} = require('sequelize')
+const { Model, Sequelize, DataTypes } = require('sequelize')
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcryptjs')
 const sequelize = require('../db/mysql')
@@ -6,14 +6,14 @@ const sequelize = require('../db/mysql')
 class User extends Model {
     async generateAuthToken() {
         const user = this
-        const token = jwt.sign({user_ID: user.user_ID}, process.env.JWT_SECRET)
+        const token = jwt.sign({ user_ID: user.user_ID }, process.env.JWT_SECRET)
         user.token = token
         await user.save()
         return token
     }
 
     static async findByCredentials(phone, password) {
-        const user = await User.findOne({where: {phone: phone}})
+        const user = await User.findOne({ where: { phone: phone } })
         if (!user) {
             throw new Error('User does not exist')
         }
@@ -25,7 +25,7 @@ class User extends Model {
     }
 
     static async updateByPhone(user_data) {
-        const user = await User.findOne({where: {phone: user_data.phone}})
+        const user = await User.findOne({ where: { phone: user_data.phone } })
         if (user == null) {
             throw new Error("Edition failed!")
         }
@@ -38,7 +38,7 @@ class User extends Model {
     }
 
     static async updateImageByPhone(phone, filename) {
-        const user = await User.findOne({where: {phone: phone}})
+        const user = await User.findOne({ where: { phone: phone } })
         if (user == null) {
             throw new Error("Imaged failed!")
         }
@@ -50,7 +50,7 @@ class User extends Model {
     }
 
     static async addBlackList(phone) {
-        const user = await User.findOne({where: {phone: phone}})
+        const user = await User.findOne({ where: { phone: phone } })
         if (user == null) {
             throw new Error("add failed!")
         }
@@ -62,7 +62,7 @@ class User extends Model {
     }
 
     static async moveBlackList(phone) {
-        const user = await User.findOne({where: {phone: phone}})
+        const user = await User.findOne({ where: { phone: phone } })
         if (user == null) {
             throw new Error("add failed!")
         }
@@ -128,7 +128,8 @@ User.init({
         defaultValue: 0
     }
 }, {
-    sequelize
+    sequelize,
+    modelName: 'User'
 })
 
 module.exports = User
