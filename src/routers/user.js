@@ -7,6 +7,7 @@ const router = new express.Router()
 const multer = require('multer');
 const fs = require('fs')
 const authentication = require('../middleware/auth')
+const imageStorageLocation = '/usr/share/nginx/image'
 var upload = multer({dest: '/usr/share/nginx/image'})//设置存储位置
 
 router.post('/register', async (request, response) => {
