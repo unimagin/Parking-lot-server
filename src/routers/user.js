@@ -7,8 +7,9 @@ const router = new express.Router()
 const multer = require('multer');
 const fs = require('fs')
 const authentication = require('../middleware/auth')
-const imageStorageLocation = '/usr/share/nginx/image'
-var upload = multer({dest: '/usr/share/nginx/image'})//设置存储位置
+// const imageStorageLocation = '/Users/mainjay/Downloads'
+const imageStorageLocation = '/usr/share/nginx/image' //服务器图片存储位置，提交取消注释时修改此处即可
+var upload = multer({dest: imageStorageLocation})//设置存储位置
 
 router.post('/register', async (request, response) => {
     const body = request.body
@@ -124,7 +125,7 @@ router.post('/user/image/upload', upload.single('avatar'), async (request, respo
         if (user == null) {
             throw new Error("Saved failed!")
         }
-        fs.writeFile(('/usr/share/nginx/image/' + filename), data, (err) => {
+        fs.writeFile((imageStorageLocation + '/' + filename), data, (err) => {
             if (err) {
                 return response.status(400).send('写入失败')
             }
