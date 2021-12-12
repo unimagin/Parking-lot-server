@@ -1,29 +1,18 @@
 const express = require('express')
 const Bill = require('../models/bill')
-const User = require('../models/user')
 const Reservation = require('../models/reservation')
 const Park = require('../models/park')
 const authentication = require('../middleware/auth')
 const router = new express.Router()
+const price = require('./price.json')
 
 router.post('/user/bill/generate_bill', authentication, async (request, response) => {
     const user = request.user
     let violation = user.violation
     const kind = user.kind
     let unit = 0, delay_unit = 0
-    switch (kind) {
-        case 0:
-            unit = 5
-            delay_unit = 10
-            break
-        case 1:
-            unit = 2.5
-            delay_unit = 5
-            break
-        case 2:
-            unit = 1
-            delay_unit = 8
-    }
+    unit = price.parkPrice[kind].normalPrice;
+    delay_unit = price.parkPrice[kind].breakPrice;
     const reservation = request.body
     try {
         user.update({

@@ -1,0 +1,1 @@
+{"parkPrice":[{"label":"普通用户","normalPrice":5,"breakPrice":10},{"label":"VIP","normalPrice":2,"breakPrice":5},{"label":"合同用户","normalPrice":1,"breakPrice":8}],"userPrice":[{"label":"VIP","price":120},{"label":"合同用户","price":110}]}

@@ -17,7 +17,7 @@ router.post('/user/reservation/change_used', async (request, response) => {
             arrive_time: new Date(arrive_time)
         })
         const park = await Park.findOne({ where: { parking_number: reservation.parking_number } })
-        park.parking_number = 1 //修改车位状态
+        park.status = 1 //修改车位状态
         await park.save()
         reservation.save()
         response.send('using')

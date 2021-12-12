@@ -2,7 +2,7 @@ const { DataTypes } = require('sequelize')
 const sequelize = require('../db/mysql')
 
 const Park = sequelize.define('Park', {
-    park_number: {
+    parking_number: {
         type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true
