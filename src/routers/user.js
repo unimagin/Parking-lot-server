@@ -210,8 +210,8 @@ router.post('/user/add_message', authentication, async (request, response) => {
     const user = request.user
     const reservation = request.body.reservation
     const type = request.body.type
-    const begin_time = new Date(reservation.begin_time)
-    const end_time = new Date(reservation.end_time)
+    const begin_time = new Date(reservation.begin_time).toLocaleString()
+    const end_time = new Date(reservation.end_time).toLocaleString()
     var info = '距离' + begin_time + '到' + end_time
     const time = new Date(request.body.time)
     try {
