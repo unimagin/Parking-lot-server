@@ -4,7 +4,7 @@ const User = require('./user')
 const Car = require('./car')
 
 class Reservation extends Model {
-    static async isAvailable(parking_number, begin_time, end_time, reservation_ID = undefined) {
+    static async isAvailable (parking_number, begin_time, end_time, reservation_ID = undefined) {
         begin_time = new Date(begin_time)
         end_time = new Date(end_time)
         begin_time = Date.parse(begin_time)
@@ -56,7 +56,17 @@ Reservation.init({
         type: DataTypes.INTEGER,
         allowNull: false,
         defaultValue: 0
-    }
+    },
+    msg_begin: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        defaultValue: 0
+    },
+    msg_end: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        defaultValue: 0
+    },
 }, {
     sequelize,
     modelName: 'Reservation'
