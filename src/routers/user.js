@@ -237,6 +237,18 @@ router.post('/user/add_message', authentication, async (request, response) => {
     }
 })
 
-
+router.post('/user/viewData', authentication, async (request, response) => {
+    const { user_ID, total, violation } = request.user
+    try {
+        const reserves = await Reservation.findAll({ where: { user_ID } })
+        let times = [0, 0, 0, 0, 0, 0]
+        reserves.forEach(reserve => {
+            ++times[Math.floor(reserve.begin_time.getTime() % 86400 / 14400)]
+        })
+        response.send({ total, violation, times })
+    } catch (error) {
+        response.status(400).send(error)
+    }
+})
 
 module.exports = router
