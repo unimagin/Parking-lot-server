@@ -8,6 +8,7 @@ const multer = require('multer');
 const fs = require('fs')
 const authentication = require('../middleware/auth')
 const Message = require('../models/message')
+const Contract = require('../models/contract')
 // const imageStorageLocation = '/Users/mainjay/Downloads'
 const imageStorageLocation = '/usr/share/nginx/image' //服务器图片存储位置，提交取消注释时修改此处即可
 var upload = multer({ dest: imageStorageLocation })//设置存储位置
@@ -248,6 +249,22 @@ router.post('/user/viewData', authentication, async (request, response) => {
         response.send({ total, violation, times })
     } catch (error) {
         response.status(400).send(error)
+    }
+})
+
+router.post('/api/user/buy_contract', authentication, async (request, response) => {
+    const user = request.user
+    try {
+        let { car_number, time, begin_time, end_time, parking_number, money } = request.body
+        time = new Date(time)
+        begin_time = new Date(begin_time)
+        end_time = new Date(end_time)
+        user.kind = 2
+        await user.save()
+        const contract = await Contract.create({ user_ID: user.user_ID, car_number, time, begin_time, end_time, parking_number, money })
+        response.send(contract)
+    } catch (error) {
+        response.status(400).send()
     }
 })
 

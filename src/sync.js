@@ -6,8 +6,9 @@ const Reservation = require('./models/reservation')
 const Bill = require('./models/bill')
 const Park = require('./models/park')
 const Message = require('./models/message')
+const Contract = require('./models/contract')
 
-async function init () {
+async function init() {
     console.log("正在初始化车位...")
     for (let floor = 1; floor <= process.env.FLOOR_NUM; ++floor) {
         for (let j = 0; j < process.env.PARKS_PER_FLOOR; ++j) {
@@ -18,7 +19,7 @@ async function init () {
 }
 
 // synchronize models
-async function sync () {
+async function sync() {
     await sequelize.query('SET FOREIGN_KEY_CHECKS=0')
     await sequelize.sync({ force: true })
     await sequelize.query('SET FOREIGN_KEY_CHECKS=1')
