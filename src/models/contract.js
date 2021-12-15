@@ -8,24 +8,21 @@ class Contract extends Model {
 
 Contract.init({
     time: {
-        type: DataTypes.DATEONLY,
+        type: DataTypes.INTEGER,
         allowNull: false
     },
     begin_time: {
-        type: DataTypes.DATE,
+        type: DataTypes.STRING,
         allowNull: false
     },
     end_time: {
-        type: DataTypes.DATE,
+        type: DataTypes.STRING,
         allowNull: false
     },
     parking_number: {
         type: DataTypes.INTEGER,
         allowNull: false
     },
-    money: {
-        type: DataTypes.DOUBLE
-    }
 }, {
     sequelize,
     modelName: 'Contract'
