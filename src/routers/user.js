@@ -252,7 +252,7 @@ router.post('/user/viewData', authentication, async (request, response) => {
     }
 })
 
-router.post('/api/user/buy_contract', authentication, async (request, response) => {
+router.post('/user/buy_contract', authentication, async (request, response) => {
     const user = request.user
     try {
         let { car_number, time, begin_time, end_time, parking_number, money } = request.body
